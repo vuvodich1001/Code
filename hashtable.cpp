@@ -1,6 +1,6 @@
 #include<iostream>
 using namespace std;
 int main(){
-    cout << "Hello World\n";
+    cout << "Thuc hanh hashtable\n";
     return 0;
 }
