@@ -1,3 +1,0 @@
-Chạy với 3 file header, header.cpp và main.cpp
-=> g++ header.h header.cpp main.cpp -o Classes
-.\Classes
