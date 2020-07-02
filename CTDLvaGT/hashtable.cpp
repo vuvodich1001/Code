@@ -3,11 +3,11 @@
 #include <vector>
 using namespace std;
 class Person {
-   protected:
+protected:
     string name;
     int age;
 
-   public:
+public:
     virtual void getdata();
     virtual void putdata();
 };
@@ -24,11 +24,11 @@ void Person::putdata() {
     cout << "Age: " << this->age << endl;
 }
 class Student : public Person {
-   protected:
+protected:
     float overallmark;
     int rank;
 
-   public:
+public:
     void getdata();
     void putdata();
 };
@@ -45,11 +45,11 @@ void Student::putdata() {
     cout << "Rank: " << this->rank << endl;
 }
 class Singer : public Person {
-   protected:
+protected:
     int numberofalbums;
     int numberofshows;
 
-   public:
+public:
     void getdata();
     void putdata();
 };
@@ -66,7 +66,7 @@ void Singer::putdata() {
     cout << "Number of shows: " << this->numberofshows << endl;
 }
 void menu() {
-    vector<Person *> p;
+    vector<Person*> p;
     while (true) {
         system("cls");
         cout << "\n\t1.Student";
@@ -76,18 +76,20 @@ void menu() {
         int selection;
         cout << "\nYour selection is: ";
         cin >> selection;
-        Person *a = NULL;
+        Person* a = NULL;
         system("cls");
         if (selection == 0) break;
         if (selection == 1) {
             a = new Student;
             a->getdata();
             p.push_back(a);
-        } else if (selection == 2) {
+        }
+        else if (selection == 2) {
             a = new Singer;
             a->getdata();
             p.push_back(a);
-        } else if (selection == 3) {
+        }
+        else if (selection == 3) {
             if (!p.empty()) {
                 for (int i = 0; i < p.size(); i++) {
                     p[i]->putdata();

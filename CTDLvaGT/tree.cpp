@@ -63,7 +63,8 @@ int main() {
     int x, val;
     while (true) {
         cin >> x;
-        if (x == 0) break;
+        if (x == 0)
+            break;
         if (x == 1) {
             cin >> val;
             root = add_node(root, val);
