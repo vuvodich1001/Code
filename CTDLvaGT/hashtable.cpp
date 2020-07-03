@@ -1,106 +1,136 @@
+#include <algorithm>
+#include <chrono>
+#include <ctime>
 #include <iostream>
-#include <string>
-#include <vector>
+#include <ratio>
 using namespace std;
-class Person {
-protected:
-    string name;
-    int age;
-
-public:
-    virtual void getdata();
-    virtual void putdata();
+//===============HASH TABLE===============
+#define size 10000000
+struct node {
+    int val;
+    node* next;
 };
-void Person::getdata() {
-    cin.ignore();
-    fflush(stdin);
-    cout << "Name: ";
-    getline(cin, this->name);
-    cout << "Age: ";
-    cin >> this->age;
-}
-void Person::putdata() {
-    cout << "Name: " << this->name << endl;
-    cout << "Age: " << this->age << endl;
-}
-class Student : public Person {
-protected:
-    float overallmark;
-    int rank;
-
-public:
-    void getdata();
-    void putdata();
+struct list {
+    node* head;
+    node* tail;
+    list() {
+        head = tail = NULL;
+    }
 };
-void Student::getdata() {
-    Person::getdata();
-    cout << "overall mark: ";
-    cin >> this->overallmark;
-    cout << "Rank: ";
-    cin >> this->rank;
+node* create_node(int val) {
+    node* p = new node;
+    p->val = val;
+    p->next = NULL;
+    return p;
 }
-void Student::putdata() {
-    Person::putdata();
-    cout << "overrall mark: " << this->overallmark << endl;
-    cout << "Rank: " << this->rank << endl;
+void add_tail(list& l, int val) {
+    node* p = create_node(val);
+    if (l.head == NULL) {
+        l.head = l.tail = p;
+    }
+    else {
+        l.tail->next = p;
+        l.tail = p;
+    }
 }
-class Singer : public Person {
-protected:
-    int numberofalbums;
-    int numberofshows;
-
-public:
-    void getdata();
-    void putdata();
+bool find(list l, int val) {
+    for (node* p = l.head; p != NULL; p = p->next) {
+        if (p->val == val) {
+            return true;
+        }
+    }
+    return false;
+}
+void insert(list*& l, int val) {
+    int k = val % size;
+    if (find(l[k], val))
+        return;
+    else {
+        add_tail(l[k], val);
+    }
+}
+bool search_hash(list* l, int val) {
+    int k = val % size;
+    return find(l[k], val);
+}
+//===============BINARY SEARCH TREE===============
+struct tree {
+    int val;
+    tree* left;
+    tree* right;
 };
-void Singer::getdata() {
-    Person::getdata();
-    cout << "Number of albums: ";
-    cin >> this->numberofalbums;
-    cout << "Number of shows: ";
-    cin >> this->numberofshows;
+tree* create_tree(int val) {
+    tree* p = new tree;
+    p->val = val;
+    p->left = NULL;
+    p->right = NULL;
+    return p;
 }
-void Singer::putdata() {
-    Person::putdata();
-    cout << "Number of albums: " << this->numberofalbums << endl;
-    cout << "Number of shows: " << this->numberofshows << endl;
+tree* add_node(tree* root, int val) {
+    if (root == NULL) {
+        root = create_tree(val);
+    }
+    else if (val < root->val) {
+        root->left = add_node(root->left, val);
+    }
+    else if (val > root->val) {
+        root->right = add_node(root->right, val);
+    }
+    return root;
 }
-void menu() {
-    vector<Person*> p;
-    while (true) {
-        system("cls");
-        cout << "\n\t1.Student";
-        cout << "\n\t2.Singer";
-        cout << "\n\t3.print list of student and singger";
-        cout << "\n\t0.Thoat";
-        int selection;
-        cout << "\nYour selection is: ";
-        cin >> selection;
-        Person* a = NULL;
-        system("cls");
-        if (selection == 0) break;
-        if (selection == 1) {
-            a = new Student;
-            a->getdata();
-            p.push_back(a);
-        }
-        else if (selection == 2) {
-            a = new Singer;
-            a->getdata();
-            p.push_back(a);
-        }
-        else if (selection == 3) {
-            if (!p.empty()) {
-                for (int i = 0; i < p.size(); i++) {
-                    p[i]->putdata();
-                    cout << "\n\n";
-                }
-            }
-        }
-        system("pause");
+tree* search_tree(tree* root, int val) {
+    if (root == NULL) {
+        return NULL;
+    }
+    else if (val < root->val) {
+        return search_tree(root->left, val);
+    }
+    else if (val > root->val) {
+        return search_tree(root->right, val);
+    }
+    else {
+        return root;
     }
 }
 int main() {
-    menu();
+    using namespace std::chrono;
+    list* l = new list[size];
+    tree* root = NULL;
+    int n;
+    cin >> n;
+    int* a = new int[n];
+    srand(time(NULL));
+    for (int i = 0; i < n; i++) {
+        a[i] = rand() % n + 1;
+    }
+    int val;
+    cout << "Nhap gia tri can tim: ";
+    cin >> val;
+    high_resolution_clock::time_point t1, t2;
+    duration<double> time_span;
+
+    //hash table
+    t1 = high_resolution_clock::now();
+    for (int i = 0; i < n; i++) {
+        insert(l, a[i]);
+    }
+    cout << ((search_hash(l, val) == true) ? "Yes" : "No") << endl;
+    t2 = high_resolution_clock::now();
+    time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "\nHash table tooks me " << time_span.count() << " seconds\n\n";
+
+    //binary search tree
+    t1 = high_resolution_clock::now();
+    for (int i = 0; i < n; i++) {
+        root = add_node(root, a[i]);
+    }
+    cout << ((search_tree(root, val) != NULL) ? "Yes" : "No") << endl;
+    t2 = high_resolution_clock::now();
+    time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "Binary search tree tooks me " << time_span.count() << " seconds\n";
+
+    /*voi n = 1e7 thi hash table nhanh hon 18 lan so voi binary search tree, voi n <= 1000 thi bst nhanh hon hash table
+    Hash table tooks me 0.110703 seconds
+    Binary search tree tooks me 2.07645 seconds*/
     return 0;
 }
