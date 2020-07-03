@@ -1,3 +1,4 @@
+=>cd đến folder chứa 3 file đó.
 Chạy với 3 file header, header.cpp và main.cpp
 => g++ header.h header.cpp main.cpp -o Classes or g++ header.cpp header.h main.cpp -o Classes
 .\Classes
