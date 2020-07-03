@@ -1,4 +1,4 @@
-
+#pragma
 class ChineseChess {
 public:
     virtual void move() = 0;
