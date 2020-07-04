@@ -5,7 +5,7 @@
 #include <ratio>
 using namespace std;
 //===============HASH TABLE===============
-#define size 10000000
+#define size 100000
 struct node {
     int val;
     node* next;
@@ -66,7 +66,7 @@ tree* create_tree(int val) {
     p->right = NULL;
     return p;
 }
-tree* add_node(tree* root, int val) {
+tree* add_node(tree*& root, int val) {
     if (root == NULL) {
         root = create_tree(val);
     }
@@ -92,16 +92,23 @@ tree* search_tree(tree* root, int val) {
         return root;
     }
 }
+void lnr(tree* root) {
+    if (root != NULL) {
+        lnr(root->left);
+        cout << root->val << " ";
+        lnr(root->right);
+    }
+}
 int main() {
     using namespace std::chrono;
     list* l = new list[size];
     tree* root = NULL;
-    int n;
-    cin >> n;
-    int* a = new int[n];
     srand(time(NULL));
-    for (int i = 0; i < n; i++) {
-        a[i] = rand() % n + 1;
+    int x;
+    for (int i = 0; i < size; i++) {
+        x = rand() * rand();
+        insert(l, x);
+        root = add_node(root, x);
     }
     int val;
     cout << "Nhap gia tri can tim: ";
@@ -111,26 +118,16 @@ int main() {
 
     //hash table
     t1 = high_resolution_clock::now();
-    for (int i = 0; i < n; i++) {
-        insert(l, a[i]);
-    }
-    cout << ((search_hash(l, val) == true) ? "Yes" : "No") << endl;
+    search_hash(l, val);
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "\nHash table tooks me " << time_span.count() << " seconds\n\n";
+    cout << "\nHash table tooks me " << (size_t)time_span.count() << " seconds\n\n";
 
     //binary search tree
     t1 = high_resolution_clock::now();
-    for (int i = 0; i < n; i++) {
-        root = add_node(root, a[i]);
-    }
-    cout << ((search_tree(root, val) != NULL) ? "Yes" : "No") << endl;
+    search_tree(root, val);
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "Binary search tree tooks me " << time_span.count() << " seconds\n";
-
-    /*voi n = 1e7 thi hash table nhanh hon 18 lan so voi binary search tree, voi n <= 1000 thi bst nhanh hon hash table
-    Hash table tooks me 0.110703 seconds
-    Binary search tree tooks me 2.07645 seconds*/
+    cout << "Binary search tree tooks me " << (size_t)time_span.count() << " seconds\n";
     return 0;
 }
