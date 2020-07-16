@@ -1,66 +1,73 @@
 #include <iostream>
 using namespace std;
-#define max 100
-struct node {
-    int val;
-    node* next;
+class dathuc {
+protected:
+    int* heso;
+    int bac;
+
+public:
+    dathuc() {
+        heso = NULL;
+        bac = 0;
+    }
+    dathuc(int bac) {
+        this->bac = bac;
+        heso = new int[this->bac + 1];
+        for (int i = 0; i <= this->bac; i++) {
+            heso[i] = 0;
+        }
+    }
+    void Nhap();
+    void Xuat();
+    dathuc operator+(const dathuc& a);
 };
-struct list {
-    node* head;
-    node* tail;
-    list() {
-        head = tail = NULL;
-    }
-};
-node* create_node(int val) {
-    node* p = new node;
-    p->val = val;
-    p->next = NULL;
-    return p;
-}
-bool search(list*& l, int val) {
-    for (node* p = l->head; p != NULL; p = p->next) {
-        if (p->val == val)
-            return true;
-    }
-    return false;
-}
-void add_node(list*& l, int val) {
-    node* p = create_node(val);
-    if (l->head == NULL) {
-        l->head = l->tail = p;
-    }
-    else {
-        l->tail->next = p;
-        l->tail = p;
+void dathuc::Nhap() {
+    cout << "Nhap bac cua da thuc: ";
+    cin >> bac;
+    heso = new int[bac + 1];
+    for (int i = 0; i <= bac; i++) {
+        cin >> heso[i];
     }
 }
-void insert(list* l[], int val) {
-    int k = max % val;
-    if (search(l[k], val)) {
-        return;
+void dathuc::Xuat() {
+    for (int i = 0; i <= bac; i++) {
+        if (heso[i] > 0 && i != 0) cout << "+";
+        if (heso[i] == 0) {
+            continue;
+        }
+        else if (i == bac) {
+            cout << heso[i];
+        }
+        else
+            cout << heso[i] << "x^" << bac - i;
     }
-    else {
-        add_node(l[k], val);
+}
+dathuc dathuc::operator+(const dathuc& a) {
+    int bactemp = (this->bac >= a.bac) ? this->bac : a.bac;
+    dathuc temp(bactemp);
+    int j = bactemp;
+    int m = a.bac;
+    int n = this->bac;
+    while (m > -1 && n > -1) {
+        temp.heso[j--] = a.heso[m--] + this->heso[n--];
     }
+    while (m > -1 && j > -1) {
+        temp.heso[j--] = a.heso[m--];
+    }
+    while (n > -1 && j > -1) {
+        temp.heso[j--] = this->heso[n--];
+    }
+    return temp;
 }
 int main() {
-    int n;
-    cin >> n;
-    list* l[max];
-    int selection, val;
-    while (true) {
-        cin >> selection;
-        if (selection == 0) break;
-        if (selection == 1) {
-            cin >> val;
-            insert(l, val);
-        }
-        // else if (selection == 2) {
-        //     cin >> val;
-        //     int k = max % val;
-        //     cout << (search(l[k], val) == true ? "Yes" : "No") << endl;
-        // }
-    }
+    dathuc a, b, c;
+    cout << "Nhap da thuc a: ";
+    a.Nhap();
+    cout << "Nhap da thuc b: ";
+    b.Nhap();
+    cout << endl;
+    c = a + b;
+    c.Xuat();
+
     return 0;
 }
