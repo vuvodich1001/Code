@@ -78,9 +78,9 @@ tree* add_node(tree*& root, int val) {
     }
     return root;
 }
-tree* search_tree(tree* root, int val) {
+bool search_tree(tree* root, int val) {
     if (root == NULL) {
-        return NULL;
+        return false;
     }
     else if (val < root->val) {
         return search_tree(root->left, val);
@@ -89,7 +89,7 @@ tree* search_tree(tree* root, int val) {
         return search_tree(root->right, val);
     }
     else {
-        return root;
+        return true;
     }
 }
 void lnr(tree* root) {
@@ -104,11 +104,11 @@ int main() {
     list* l = new list[size];
     tree* root = NULL;
     srand(time(NULL));
-    int x;
-    for (int i = 0; i < size; i++) {
-        x = rand() * rand();
-        insert(l, x);
-        root = add_node(root, x);
+    int n;
+    cin >> n;
+    int* a = new int[n];
+    for (int i = 0; i < n; i++) {
+        a[i] = rand() % n + 1;
     }
     int val;
     cout << "Nhap gia tri can tim: ";
@@ -118,16 +118,23 @@ int main() {
 
     //hash table
     t1 = high_resolution_clock::now();
-    search_hash(l, val);
+    for (int i = 0; i < n; i++) {
+        insert(l, a[i]);
+    }
+    cout << search_hash(l, val);
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "\nHash table tooks me " << (size_t)time_span.count() << " seconds\n\n";
+    cout << "\nHash table tooks me " << time_span.count() << " seconds\n\n";
 
     //binary search tree
     t1 = high_resolution_clock::now();
-    search_tree(root, val);
+    for (int i = 0; i < n; i++) {
+        root = add_node(root, a[i]);
+    }
+    cout << search_tree(root, val);
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "Binary search tree tooks me " << (size_t)time_span.count() << " seconds\n";
+    cout << "\nBinary search tree tooks me " << time_span.count() << " seconds\n";
+    delete[] a;
     return 0;
 }
