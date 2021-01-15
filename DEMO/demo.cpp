@@ -26,7 +26,7 @@ void PhanSo::Xuat() {
 }
 
 int main() {
-    PhanSo a;
+    PhanSo a, b;
     a.Nhap();
     a.Xuat();
     return 0;
